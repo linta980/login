@@ -1,7 +1,9 @@
 <template>
   <div id="forma" @submit.prevent="ulogujSe">
     <!-- <LoginModal v-bind:login="login"/> -->
+    
     <form>
+      <p v-if="login">Kurcinaaaa! HA HA kretenu!</p>
       <fieldset>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
@@ -29,7 +31,7 @@
 
 
 <script>
-const API = "http://localhost:5000/login";
+const API = "http://localhost:5000/auth/login";
 
 import LoginModal from "./LoginModal.vue";
 
@@ -61,8 +63,8 @@ export default {
         .then(response => {
           if (response.status === 200) {
             this.$router.push("/main");
-            this.login = true;
           } else if (response.status === 304) {
+            this.login=true
             // this.$router.push('/register')
           }
         })
@@ -76,7 +78,7 @@ export default {
 <style scoped>
 #forma {
   widows: 400px;
-  margin: 0px 800px;
+  margin: 0px 40%;
 }
 #link {
   position: relative;

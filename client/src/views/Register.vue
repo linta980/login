@@ -1,7 +1,7 @@
 <template>
   <div id="forma">
     <h1>Hello this is register page</h1>
-    <form @submit="registrujSe">
+    <form @submit.prevent="registrujSe">
       <fieldset>
         <div class="form-group">
           <label for="exampleInputEmail1">Ime</label>
@@ -51,7 +51,7 @@
 
 
 <script>
-const API = "http://localhost:5000/register";
+const API = "http://localhost:5000/auth/register";
 
 export default {
   name: "Register",
@@ -90,6 +90,7 @@ export default {
             (this.broj_telefona = ""),
             (this.username = ""),
             (this.password = "");
+            this.$router.push('/main')
         })
         .catch();
     }
@@ -101,7 +102,7 @@ export default {
 <style scoped>
 #forma {
   widows: 400px;
-  margin: 0px 600px;
+  margin: 0px 25%;
 }
 #link {
   position: relative;
