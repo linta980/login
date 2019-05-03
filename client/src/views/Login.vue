@@ -63,10 +63,13 @@ export default {
         .then(response => {
           if (response.status === 200) {
             this.$router.push("/main");
-          } else if (response.status === 304) {
+          } else if (response.status === 422) {
             this.login=true
-            // this.$router.push('/register')
           }
+          return response.json()
+        }).then(data =>{
+         console.log(data);
+         localStorage.gale_token = data.token
         })
         .catch();
     }
