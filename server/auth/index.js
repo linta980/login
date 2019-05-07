@@ -23,7 +23,6 @@ const schema = Joi.object().keys({
 })
 
 
-
 // ------------------REGISTER-------------------------
 
 router.get('/register', (req, res) => {
@@ -70,6 +69,7 @@ router.post('/register', (req, res, next) => {
 // ----------------------------LOGIN--------------------------
 
 router.post('/login', (req, res, next) => {
+    
     const result = Joi.validate(req.body, schema)
     if (result.error === null) {
         users.findOne({
@@ -87,8 +87,8 @@ router.post('/login', (req, res, next) => {
                                 respondError422(res,next)
                             }
                             else{
-                                console.log(token);
                                 res.json({token})
+                                
                             }
                         })
                     }
@@ -107,6 +107,28 @@ router.post('/login', (req, res, next) => {
     }
 
 })
+
+
+
+
+//-------------------MAIN PAGE-------------------
+router.get('/main', (req, res) => {
+    res.json({
+        message:'Esi mi dobarr?',
+        user:req.user
+    })
+
+})
+
+//-------------------ABOUT PAge-------------
+router.get ('/about', (req,res)=>{
+    res.json({
+        message:'Esi mi dobar About',
+        user:req.user
+    })
+})
+
+
 
 function respondError422(res,next){
     res.status(422)

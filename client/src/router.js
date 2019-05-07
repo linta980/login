@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from './views/Login.vue'
 import MainPage from './views/MainPage.vue'
 import About from './views/About.vue'
+import Vreme from './views/Vreme.vue'
 import Register from './views/Register.vue'
 
 
@@ -17,23 +18,28 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component:Login
+      component: Login
     },
     {
       path: '/main',
       name: 'MainPage',
-      component:MainPage
+      component: MainPage
     },
     {
       path: '/register',
       name: 'Register',
-      component:Register
+      component: Register
     },
     {
       path: '/about',
       name: 'About',
-      component:About
+      component: About
+    },
+    {
+      path: '/vreme',
+      name: 'Vreme',
+      component: Vreme
     }
-    
+
   ]
 })

@@ -3,6 +3,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const body_parser = require('body-parser')
 const port = process.env.PORT || 5000
+const middleware = require('./auth/middlewares')
+
 
 // const db = require('./db/connection')
 
@@ -22,11 +24,28 @@ app.listen(port , ()=>{
 
 
 const auth = require('./auth/index')
+
 //Znaci svaku rutu koju hocu da koristim imace ovaj /auth prefix ..npr /auth/register
+
 app.use(express.json())
+app.use(middleware.checkTokenSetUser)
+
+
+// app.get('/', (req, res) => {
+//     res.json({
+//       message: '🦄🌈✨Hello World! 🌈✨🦄',
+//       user: req.user,
+//     });
+//   });
+
 app.use('/auth',auth)
 app.use('/auth/login',auth)
+app.use('/auth/main',auth)
+app.use('/auth/about',auth)
 app.use('/auth/register',auth)
+
+
+
 
 
 function notFound(req,res,next){

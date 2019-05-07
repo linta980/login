@@ -1,7 +1,7 @@
 <template>
   <div id="forma" @submit.prevent="ulogujSe">
     <!-- <LoginModal v-bind:login="login"/> -->
-    
+
     <form>
       <p v-if="login">Kurcinaaaa! HA HA kretenu!</p>
       <fieldset>
@@ -33,13 +33,9 @@
 <script>
 const API = "http://localhost:5000/auth/login";
 
-import LoginModal from "./LoginModal.vue";
-
 export default {
   name: "Login",
-  components: {
-    LoginModal
-  },
+  components: {},
   data() {
     return {
       username: "",
@@ -53,7 +49,7 @@ export default {
         username: this.username,
         password: this.password
       };
-      return fetch(API, {
+       fetch(API, {
         method: "POST",
         body: JSON.stringify(telo),
         headers: {
@@ -62,16 +58,19 @@ export default {
       })
         .then(response => {
           if (response.status === 200) {
-            this.$router.push("/main");
+            return response.json()
+            
           } else if (response.status === 422) {
-            this.login=true
+            this.login = true;
           }
-          return response.json()
-        }).then(data =>{
-         console.log(data);
-         localStorage.gale_token = data.token
+          return response.json().then((error) =>{
+            throw new Error(error.message)
+          })
         })
-        .catch();
+        .then((data) => {
+          this.$router.push("/main");
+          localStorage.token = data.token;
+        });
     }
   }
 };
