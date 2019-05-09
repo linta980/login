@@ -1,10 +1,10 @@
 <template>
   <div>
-    <router-link to="/main"> Home </router-link>|
-    <router-link :to="{name:'About'}"> About </router-link>|
-    <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
-    <router-link to="/admin" v-if="admin"> Admin |</router-link>
-    <a @click="logout"> Logout </a>
+    <router-link to="/main">Home</router-link>|
+    <router-link :to="{name:'About'}">About</router-link>|
+    <router-link :to="{name:'Vreme'}">Vreme</router-link>|
+    <router-link to="/admin" v-if="admin">Admin |</router-link>
+    <a @click="logout">Logout</a>
 
     <br>
 
@@ -14,8 +14,26 @@
     <div style="position:relative; float:left;">
       <img src="../images/zen-planner-fit.png" alt srcset width="400px" height="400px">
     </div>
-    <div style="position:relative; float:left; width:400px; height:400px; margin-left:10px;">
-      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500sxt of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500sxt of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, wLorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+    <div style="position:relative; float:left; width:600px; height:400px; margin-left:10px;">
+      <table class="table table-hover" >
+        <thead>
+          <tr>
+            <th scope="col">Approved by</th>
+            <th scope="col">Zadatak</th>
+            <th scope="col">Trener</th>
+            <th scope="col">Vreme zadavanja zadatka</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-active" v-for="zadatak in user_load" :key="zadatak">
+            <th scope="row">{{zadatak.approved_by}}</th>
+            <td>{{zadatak.domaci}}</td>
+            <td>{{zadatak.trener}}</td>
+            <td>{{zadatak.vreme}}</td>
+          </tr>
+          
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -23,13 +41,15 @@
 
 <script>
 const API = "http://localhost:5000/auth/main";
+const API_USER = "http://localhost:5000/auth/register/";
+const API_TERETANA = "http://localhost:5000/auth/teretana/";
 
 export default {
   data() {
     return {
       user: null,
-      admin: false
-      
+      admin: false,
+      user_load:[]
     };
   },
   name: "MainPage",
@@ -45,9 +65,29 @@ export default {
           this.user = result.user;
           if (this.user.username === "admin@admin.net") {
             this.admin = true;
-            localStorage.admin=true
+            localStorage.admin = true;
           }
-
+          fetch(API_USER + `${result.user._id}`, {
+            method: "GET",
+            headers: {
+              token: localStorage.token
+            }
+          }).then(res => res.json())
+          .then(result => {
+            if(result){
+              fetch(API_TERETANA +`${result.ime}`,{
+                method:'GET',
+                headers:{
+                  token:localStorage.token
+                }
+              }).then(res =>res.json())
+              .then(result =>{
+                this.user_load=result;
+              })
+            }
+          })
+            
+          
         } else {
           this.logout();
         }
@@ -56,7 +96,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("token");
-      localStorage.removeItem("admin")
+      localStorage.removeItem("admin");
       this.$router.push("/login");
     }
   }

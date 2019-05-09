@@ -37,6 +37,7 @@ app.use('/auth/login',auth)
 app.use('/auth/main',auth)
 app.use('/auth/about',auth)
 app.use('/auth/admin',auth)
+app.use('/auth/teretana',auth)
 app.use('/auth/register',auth)
 
 

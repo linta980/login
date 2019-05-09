@@ -40,6 +40,16 @@ router.get('/register', (req, res) => {
     })
 
 })
+router.get('/register/:id',(req,res,next)=>{
+    users.findOne({'_id':req.params.id}).then(result =>{
+        if(result){
+            res.json(result)
+        }else{
+            respondError422(res,next)
+        }
+            
+    })
+})
 
 router.post('/register', (req, res, next) => {
     const result = Joi.validate(req.body, schema)
@@ -152,6 +162,26 @@ router.post('/admin' , (req,res,next)=>{
         respondError422(res,next)
     }
 })
+//--------------------------TERETANA-----------------------
+
+router.get('/teretana',(req,res,next)=>{
+    teretana.find({}).then(result =>{
+        if(result){
+            res.json(result)
+        }else{
+            respondError422(res,next)
+        }
+    })
+})
+
+router.get('/teretana/:ime',(req,res,next)=>{
+    const user= req.body.trener
+    console.log(user);
+    teretana.find({'trener':req.params.ime})
+    .then(users => res.json(users))
+
+})
+
 
 
 function respondError422(res,next){
