@@ -8,6 +8,7 @@ const db = require('../db/connection')
 
 // jEBENO ZNACI : juzers mi je baza (database) a users mi je tabela/kolekcija -- jebo joj ja mater
 const users = db.get('users')
+const teretana = db.get('teretana_useri')
 
 const router = express.Router()
 
@@ -20,6 +21,13 @@ const schema = Joi.object().keys({
     adresa: Joi.string(),
     broj_telefona: Joi.string(),
 
+})
+
+const schema_teretana = Joi.object().keys({
+        trener:Joi.string().required(),
+        domaci:Joi.string().required(),
+        vreme:Joi.date().required(),
+        approved_by:Joi.string().required() 
 })
 
 
@@ -114,8 +122,8 @@ router.post('/login', (req, res, next) => {
 //-------------------MAIN PAGE-------------------
 router.get('/main', (req, res) => {
     res.json({
-        message:'Esi mi dobarr?',
-        user:req.user
+        message:'E sve kul..',
+        user: req.user
     })
 
 })
@@ -128,6 +136,22 @@ router.get ('/about', (req,res)=>{
     })
 })
 
+//--------Admin Page------
+router.post('/admin' , (req,res,next)=>{
+    const result = Joi.validate(req.body, schema_teretana)
+    if(result.error===null){
+        teretana.insert({
+            trener:req.body.trener,
+            domaci:req.body.domaci,
+            vreme:req.body.vreme,
+            approved_by: req.body.approved_by
+        }).then(inserted_teretana => {
+            res.json(inserted_teretana)
+        })
+    }else{
+        respondError422(res,next)
+    }
+})
 
 
 function respondError422(res,next){

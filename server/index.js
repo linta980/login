@@ -31,17 +31,12 @@ app.use(express.json())
 app.use(middleware.checkTokenSetUser)
 
 
-// app.get('/', (req, res) => {
-//     res.json({
-//       message: '🦄🌈✨Hello World! 🌈✨🦄',
-//       user: req.user,
-//     });
-//   });
 
 app.use('/auth',auth)
 app.use('/auth/login',auth)
 app.use('/auth/main',auth)
 app.use('/auth/about',auth)
+app.use('/auth/admin',auth)
 app.use('/auth/register',auth)
 
 

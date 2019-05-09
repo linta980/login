@@ -1,9 +1,10 @@
 <template>
   <div>
-    <router-link to="/main">Home</router-link>|
-    <router-link to="/about">About</router-link>|
-    <router-link to="/vreme">Vreme</router-link>|
-    <a @click="logout">Logout</a>
+      <router-link to="/main"> Home </router-link>|
+    <router-link :to="{name:'About'}"> About </router-link>|
+    <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
+    <router-link to="/admin" v-if="admin"> Admin |</router-link>
+    <a @click="logout"> Logout </a>
     <br>
     <h1 v-if="!user">Jos nema Usera..</h1>
     <h1 v-if="user">Hello {{user}}, this is About page</h1>
@@ -18,7 +19,8 @@ export default {
   name: "About",
   data() {
     return {
-      user: null
+      user: null,
+      admin: false
     };
   },
   mounted() {
@@ -35,10 +37,14 @@ export default {
           this.logout();
         }
       });
+    if (localStorage.getItem("admin")) {
+      this.admin = true;
+    }
   },
   methods: {
     logout() {
       localStorage.removeItem("token");
+      localStorage.removeItem("admin");
       this.$router.push("/login");
     }
   }

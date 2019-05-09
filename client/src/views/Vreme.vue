@@ -1,9 +1,11 @@
 <template>
   <div>
-    <router-link to="/main">Home</router-link>|
-    <router-link to="/about">About</router-link>|
-    <router-link to>Vreme</router-link>|
-    <a @click="logout">Logout</a>
+      <router-link to="/main"> Home </router-link>|
+    <router-link :to="{name:'About'}"> About </router-link>|
+    <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
+    <router-link to="/admin" v-if="admin"> Admin |</router-link>
+    <a @click="logout"> Logout </a>
+    
 
     <div class="content">
       <div v-if="temperature" id="content">
@@ -44,26 +46,29 @@ export default {
   name: "Vreme",
   data() {
     return {
-      temperature: null
+      temperature: null,
+      admin: false
     };
   },
   mounted() {
     if (localStorage.token != null) {
-      setTimeout(() => {
-        axios
-          .get(
-            "https://api.openweathermap.org/data/2.5/weather?q=Belgrade,Serbia&APPID=cb0aeb43b8923a51cfbda7edaf4ac7c6&units=metric"
-          )
-          .then(res => (this.temperature = res.data))
-          .catch();
-      }, 3000);
+      axios
+        .get(
+          "https://api.openweathermap.org/data/2.5/weather?q=Belgrade,Serbia&APPID=cb0aeb43b8923a51cfbda7edaf4ac7c6&units=metric"
+        )
+        .then(res => (this.temperature = res.data))
+        .catch();
     } else {
       this.$router.push("/login");
+    }
+    if (localStorage.getItem("admin")) {
+      this.admin = true;
     }
   },
   methods: {
     logout() {
       localStorage.removeItem("token");
+      localStorage.removeItem("admin")
       this.$router.push("/login");
     }
   }
