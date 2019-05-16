@@ -8,7 +8,6 @@ function checkTokenSetUser(req, res, next) {
         console.log(authorization)
         jwt.verify(authorization , process.env.TOKEN_SECCRET ,(err, user)=>{
             if(err){
-                console.log(err)
                 console.log('kurcina....')
             }
             req.user=user;

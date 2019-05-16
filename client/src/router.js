@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import MainPage from './views/MainPage.vue'
 import About from './views/About.vue'
 import Vreme from './views/Vreme.vue'
+import Profile from './views/Profile.vue'
 import Admin from './views/Admin.vue'
 import Register from './views/Register.vue'
 
@@ -45,7 +46,14 @@ export default new Router({
       path: '/admin',
       name: 'Admin',
       component: Admin
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile
     }
+    
+    
 
   ]
 })

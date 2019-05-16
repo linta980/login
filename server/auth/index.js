@@ -4,6 +4,25 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
+const fileUpload = require('express-fileupload')
+
+const multer = require('multer')
+
+
+
+
+//Set storage engine
+const storage = multer.diskStorage({
+    destination: './public/uploads',
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + file.originalname)
+    }
+})
+const upload = multer({
+    storage: storage
+})
+
+
 const db = require('../db/connection')
 
 // jEBENO ZNACI : juzers mi je baza (database) a users mi je tabela/kolekcija -- jebo joj ja mater
@@ -24,10 +43,14 @@ const schema = Joi.object().keys({
 })
 
 const schema_teretana = Joi.object().keys({
-        trener:Joi.string().required(),
-        domaci:Joi.string().required(),
-        vreme:Joi.date().required(),
-        approved_by:Joi.string().required() 
+    trener: Joi.string().required(),
+    domaci: Joi.string().required(),
+    vreme: Joi.date().required(),
+    approved_by: Joi.string().required()
+})
+
+const schema_file = Joi.object().keys({
+    file_name: Joi.string().valid(['image/jpeg/png']).required()
 })
 
 
@@ -40,14 +63,14 @@ router.get('/register', (req, res) => {
     })
 
 })
-router.get('/register/:id',(req,res,next)=>{
-    users.findOne({'_id':req.params.id}).then(result =>{
-        if(result){
+router.get('/register/:id', (req, res, next) => {
+    users.findOne({ '_id': req.params.id }).then(result => {
+        if (result) {
             res.json(result)
-        }else{
-            respondError422(res,next)
+        } else {
+            respondError422(res, next)
         }
-            
+
     })
 })
 
@@ -87,41 +110,44 @@ router.post('/register', (req, res, next) => {
 // ----------------------------LOGIN--------------------------
 
 router.post('/login', (req, res, next) => {
-    
+
     const result = Joi.validate(req.body, schema)
     if (result.error === null) {
         users.findOne({
             username: req.body.username
         }).then(user => {
-            if(user){
+            if (user) {
                 const password = bcrypt.compare(req.body.password, user.password).then(result => {
                     if (result) {
                         const payload = {
                             _id: user._id,
-                            username: user.username
+                            username: user.username,
+                            file_path: user.file_path,
+                            name:user.name
+
                         }
-                        const token = jwt.sign(payload, process.env.TOKEN_SECCRET,{expiresIn : '1d'}, (err, token)=>{
-                            if(err){
-                                respondError422(res,next)
+                        const token = jwt.sign(payload, process.env.TOKEN_SECCRET, { expiresIn: '1d' }, (err, token) => {
+                            if (err) {
+                                respondError422(res, next)
                             }
-                            else{
-                                res.json({token})
-                                
+                            else {
+                                res.json({ token })
+
                             }
                         })
                     }
                     else {
-                        respondError422(res,next)
+                        respondError422(res, next)
                     }
                 });
             }
-            else{
-                respondError422(res,next)
+            else {
+                respondError422(res, next)
             }
         })
     }
     else {
-        respondError422(res,next)
+        respondError422(res, next)
     }
 
 })
@@ -132,59 +158,91 @@ router.post('/login', (req, res, next) => {
 //-------------------MAIN PAGE-------------------
 router.get('/main', (req, res) => {
     res.json({
-        message:'E sve kul..',
+        message: 'E sve kul..',
         user: req.user
     })
 
 })
 
 //-------------------ABOUT PAge-------------
-router.get ('/about', (req,res)=>{
+router.get('/about', (req, res) => {
     res.json({
-        message:'Esi mi dobar About',
-        user:req.user
+        message: 'Esi mi dobar About',
+        user: req.user
     })
 })
 
 //--------Admin Page------
-router.post('/admin' , (req,res,next)=>{
+router.post('/admin', (req, res, next) => {
     const result = Joi.validate(req.body, schema_teretana)
-    if(result.error===null){
+    if (result.error === null) {
         teretana.insert({
-            trener:req.body.trener,
-            domaci:req.body.domaci,
-            vreme:req.body.vreme,
+            trener: req.body.trener,
+            domaci: req.body.domaci,
+            vreme: req.body.vreme,
             approved_by: req.body.approved_by
         }).then(inserted_teretana => {
             res.json(inserted_teretana)
         })
-    }else{
-        respondError422(res,next)
+    } else {
+        respondError422(res, next)
     }
 })
 //--------------------------TERETANA-----------------------
 
-router.get('/teretana',(req,res,next)=>{
-    teretana.find({}).then(result =>{
-        if(result){
+router.get('/teretana', (req, res, next) => {
+    teretana.find({}).then(result => {
+        if (result) {
             res.json(result)
-        }else{
-            respondError422(res,next)
+        } else {
+            respondError422(res, next)
         }
     })
 })
 
-router.get('/teretana/:ime',(req,res,next)=>{
-    const user= req.body.trener
-    console.log(user);
-    teretana.find({'trener':req.params.ime})
-    .then(users => res.json(users))
+router.get('/teretana/:ime', (req, res, next) => {
+    teretana.find({ 'trener': req.params.ime })
+        .then(users => res.json(users))
 
 })
 
 
+//--------------------POST a FIle----------------//
+router.post('/upload', upload.single("file"), (req, res, next) => {
 
-function respondError422(res,next){
+    if (req.body.token != null) {
+        if (req.body.username != null) {
+            users.update(
+                { username: req.body.username },
+                { $set: { 'file_path': req.file.path } },
+                false,
+                true
+
+            ).then(response => {
+                if (response) {
+                    res.json({
+                        file: req.file,
+                        message: 'Document uploaded'
+                    })
+                }
+                else {
+                    respondError422(res, next())
+                }
+            })
+
+        } else {
+            respondError422(res, next())
+        }
+    } else {
+        respondError422(res, next())
+    }
+
+    // console.log(req.body.username)
+    // res.json({file: req.file,token:req.body.token})
+})
+
+
+function respondError422(res, next) {
     res.status(422)
     const error = new Error('Unable to login.')
     next(error)

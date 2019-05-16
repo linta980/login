@@ -4,6 +4,7 @@
     <router-link to="/about">About</router-link>|
     <router-link to="/vreme">Vreme</router-link>|
     <router-link to="/admin">Admin</router-link>|
+    <router-link :to="{name:'Profile'}"> Profile |</router-link>
     <a @click="logout">Logout</a>
     <h1>{{message}}</h1>
 
@@ -90,7 +91,10 @@ export default {
 // -4 serije mrtvo dizanje
 
 
-<style >
+
+
+
+<style scoped>
 #nav {
   padding: 30px;
 }

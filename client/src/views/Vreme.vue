@@ -1,10 +1,13 @@
 <template>
-  <div>
-      <router-link to="/main"> Home </router-link>|
-    <router-link :to="{name:'About'}"> About </router-link>|
-    <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
-    <router-link to="/admin" v-if="admin"> Admin |</router-link>
-    <a @click="logout"> Logout </a>
+  <div id="container">
+    <div class="page-header">
+      <router-link to="/main">Home</router-link>|
+      <router-link :to="{name:'About'}">About</router-link>|
+      <router-link :to="{name:'Vreme'}">Vreme</router-link>|
+      <router-link to="/admin" v-if="admin">Admin |</router-link>
+      <router-link :to="{name:'Profile'}"> Profile |</router-link>
+      <a @click="logout">Logout</a>
+    </div>
     
 
     <div class="content">
@@ -35,7 +38,11 @@
       </div>
       <div v-else>loading weather data...</div>
     </div>
+
+
+    
   </div>
+  
 </template>
 
 
@@ -66,14 +73,18 @@ export default {
     }
   },
   methods: {
-    logout() {
+  logout() {
       localStorage.removeItem("token");
-      localStorage.removeItem("admin")
+      localStorage.removeItem("username");
+      localStorage.removeItem("admin");
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("ime");
       this.$router.push("/login");
     }
   }
 };
 </script>
+
 
 
 <style scoped>

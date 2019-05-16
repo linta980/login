@@ -27,6 +27,9 @@ const auth = require('./auth/index')
 
 //Znaci svaku rutu koju hocu da koristim imace ovaj /auth prefix ..npr /auth/register
 
+//da bi opsluzivao slike koristim static u expresu 
+app.use(express.static('public/uploads'))
+
 app.use(express.json())
 app.use(middleware.checkTokenSetUser)
 
@@ -38,6 +41,7 @@ app.use('/auth/main',auth)
 app.use('/auth/about',auth)
 app.use('/auth/admin',auth)
 app.use('/auth/teretana',auth)
+app.use('/auth/upload',auth)
 app.use('/auth/register',auth)
 
 
