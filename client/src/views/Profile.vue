@@ -129,6 +129,7 @@ export default {
       formData.append("username", localStorage.username);
       try {
         await axios.post(API_FILE, formData);
+        
       } catch (error) {
         console.log(error);
       }

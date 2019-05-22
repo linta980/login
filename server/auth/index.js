@@ -123,7 +123,7 @@ router.post('/login', (req, res, next) => {
                             _id: user._id,
                             username: user.username,
                             file_path: user.file_path,
-                            name:user.name
+                            name: user.name
 
                         }
                         const token = jwt.sign(payload, process.env.TOKEN_SECCRET, { expiresIn: '1d' }, (err, token) => {
@@ -131,7 +131,7 @@ router.post('/login', (req, res, next) => {
                                 respondError422(res, next)
                             }
                             else {
-                                res.json({ token })
+                                res.json({token,user})
 
                             }
                         })
@@ -157,6 +157,7 @@ router.post('/login', (req, res, next) => {
 
 //-------------------MAIN PAGE-------------------
 router.get('/main', (req, res) => {
+    
     res.json({
         message: 'E sve kul..',
         user: req.user
@@ -176,14 +177,39 @@ router.get('/about', (req, res) => {
 router.post('/admin', (req, res, next) => {
     const result = Joi.validate(req.body, schema_teretana)
     if (result.error === null) {
-        teretana.insert({
-            trener: req.body.trener,
-            domaci: req.body.domaci,
-            vreme: req.body.vreme,
-            approved_by: req.body.approved_by
+
+        users.update(
+            { username: req.body.trener },
+            {
+                $push: {
+                    domaci: {
+                        trener: req.body.trener,
+                        program: req.body.domaci,
+                        vreme: req.body.vreme,
+                        approved_by: req.body.approved_by
+                    }
+                }
+            }
+        ).then(response => {
+            if (response) {
+                res.json({
+                    file: req.file,
+                    message: 'Document uploaded'
+                })
+            }
+            else {
+                respondError422(res, next())
+            }
         }).then(inserted_teretana => {
             res.json(inserted_teretana)
         })
+        // teretana.insert({
+        //     trener: req.body.trener,
+        //     domaci: req.body.domaci,
+        //     vreme: req.body.vreme,
+        //     approved_by: req.body.approved_by
+        // })
+
     } else {
         respondError422(res, next)
     }

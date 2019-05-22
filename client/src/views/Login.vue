@@ -44,12 +44,12 @@ export default {
     };
   },
   methods: {
-    ulogujSe() {
+    async ulogujSe() {
       const telo = {
         username: this.username,
         password: this.password
       };
-       fetch(API, {
+      fetch(API, {
         method: "POST",
         body: JSON.stringify(telo),
         headers: {
@@ -58,18 +58,18 @@ export default {
       })
         .then(response => {
           if (response.status === 200) {
-            return response.json()
-            
+            return response.json();
           } else if (response.status === 422) {
             this.login = true;
           }
-          return response.json().then((error) =>{
-            throw new Error(error.message)
-          })
+          return response.json().then(error => {
+            throw new Error(error.message);
+          });
         })
-        .then((data) => {
-          this.$router.push("/main");
+        .then(data => {
           localStorage.token = data.token;
+          localStorage.user_id=data.user._id
+          this.$router.push("/main");
         });
     }
   }

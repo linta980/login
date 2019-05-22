@@ -23,12 +23,11 @@
         <p>{{djokica}}</p>
       </div>
       <div>
-        <table class="table table-hover">
+        <table class="table table-hover" style="margin-top:20px;">
           <thead>
             <tr>
               <th scope="col">Approved by</th>
               <th scope="col">Zadatak</th>
-              <th scope="col">Trener</th>
               <th scope="col">Vreme zadavanja zadatka</th>
             </tr>
           </thead>
@@ -37,8 +36,7 @@
             da mi key bude isto sto i zadatak u user_load-->
             <tr class="table-active" v-for="zadatak in user_load" v-bind:key="zadatak._id">
               <th scope="row">{{zadatak.approved_by}}</th>
-              <td>{{zadatak.domaci}}</td>
-              <td>{{zadatak.trener}}</td>
+              <td>{{zadatak.program}}</td>
               <td>{{zadatak.vreme}}</td>
             </tr>
           </tbody>
@@ -65,72 +63,9 @@ export default {
     };
   },
   name: "MainPage",
-  mounted() {
+  computed: {
     // main call
-    fetch(API, {
-      headers: {
-        token: localStorage.token
-      }
-    })
-      .then(res => res.json())
-      .then(result => {
-        if (result.user) {
-          this.user = result.user;
-          if (result.user.username === "admin@admin.net") {
-            this.admin = true;
-            localStorage.admin = true;
-            localStorage.user_id = result.user._id;
-            localStorage.username = result.user.username;
-
-            if (result.user.file_path) {
-              const test = result.user.file_path;
-              const a = test.replace(/\\/g, "/");
-              const testPic = a.split("/")[2];
-              this.picture = "http://localhost:5000/" + testPic;
-            } else {
-              this.djokica = "Djokica...nemas sliku..";
-            }
-          } else {
-            localStorage.user_id = result.user._id;
-            localStorage.username = result.user.username;
-
-            if (result.user.file_path) {
-              const test = result.user.file_path;
-              const a = test.replace(/\\/g, "/");
-              const testPic = a.split("/")[2];
-              this.picture = "http://localhost:5000/" + testPic;
-            } else {
-              this.djokica = "Djokica...nemas sliku..";
-            }
-          }
-
-          fetch(API_USER + result.user._id, {
-            method: "GET",
-            headers: {
-              token: localStorage.token
-            }
-          })
-            .then(res => res.json())
-            .then(result => {
-              localStorage.ime = result.ime;
-              fetch(API_TERETANA + result.ime, {
-                method: "GET",
-                headers: {
-                  token: localStorage.token
-                }
-              })
-                .then(res => res.json())
-                .then(result => {
-                  this.user_load = result;
-                });
-            });
-        } else {
-          this.logout();
-        }
-      });
-
     // register get po user_id-u koji sam ubacio u localStoridge a vracam nazad ime!
-
     //uz pomoc imena iz prethodnog poziva dobavljam podatke iz teretana tabele
   },
 
@@ -142,7 +77,44 @@ export default {
       localStorage.removeItem("user_id");
       localStorage.removeItem("ime");
       this.$router.push("/login");
-    }
+    },
+    onloadFunc() {}
+  },
+
+  mounted() {
+    fetch(API_USER + localStorage.user_id, {
+      method: "GET",
+      headers: {
+        token: localStorage.token
+      }
+    })
+      .then(res => res.json())
+      .then(result => {
+        if (result) {
+          this.user = result;
+          this.user_load = result.domaci;
+
+          if (result.username === "admin@admin.net") {
+            this.admin = true;
+            localStorage.admin = true;
+            localStorage.user_id = result._id;
+            localStorage.username = result.username;
+          } else {
+            localStorage.user_id = result._id;
+            localStorage.username = result.username;
+          }
+          if (result.file_path) {
+            const test = result.file_path;
+            const a = test.replace(/\\/g, "/");
+            const testPic = a.split("/")[2];
+            this.picture = "http://localhost:5000/" + testPic;
+          } else {
+            this.djokica = "Djokica...nemas sliku..";
+          }
+        } else {
+          this.logout();
+        }
+      });
   }
 };
 </script>
