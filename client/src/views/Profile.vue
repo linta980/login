@@ -1,12 +1,13 @@
 <template>
   <div id="container">
     <div class="page-header">
-      <router-link to="/main">Home</router-link>|
-      <router-link :to="{name:'About'}">About</router-link>|
-      <router-link :to="{name:'Vreme'}">Vreme</router-link>|
-      <router-link to="/admin" v-if="admin">Admin |</router-link>
-      <router-link to="/profile">Profile |</router-link>
-      <a @click="logout">Logout</a>
+      <router-link to="/main"> Home </router-link>|
+      <router-link :to="{name:'About'}"> About </router-link>|
+      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
+      <router-link to="/admin" v-if="admin"> Admin |</router-link>
+      <router-link :to="{name:'Profile'}"> Profile |</router-link>
+      <router-link :to="{name:'Test'}"> Galerija |</router-link>
+      <a @click="logout"> Logout</a>
 
       <fieldset id="field">
         <br>
@@ -83,7 +84,6 @@
               <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
             </div>
           </div>
-          
         </fieldset>
       </fieldset>
     </div>
@@ -104,13 +104,13 @@ export default {
       admin: false,
       file: "",
       file_selected: false,
-      user:""
+      user: ""
     };
   },
   mounted() {
     if (localStorage.getItem("admin")) {
       this.admin = true;
-      this.user=localStorage.ime
+      this.user = localStorage.ime;
     }
   },
   methods: {
@@ -129,7 +129,6 @@ export default {
       formData.append("username", localStorage.username);
       try {
         await axios.post(API_FILE, formData);
-        
       } catch (error) {
         console.log(error);
       }

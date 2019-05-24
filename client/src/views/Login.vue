@@ -68,7 +68,7 @@ export default {
         })
         .then(data => {
           localStorage.token = data.token;
-          localStorage.user_id=data.user._id
+          localStorage.user_id=data.user_id
           this.$router.push("/main");
         });
     }

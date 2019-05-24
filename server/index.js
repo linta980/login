@@ -5,8 +5,13 @@ const body_parser = require('body-parser')
 const port = process.env.PORT || 5000
 const middleware = require('./auth/middlewares')
 
+const kobas = require('./auth/index')
 
-// const db = require('./db/connection')
+const cron = require('node-cron')
+
+
+
+const db = require('./db/connection')
 
 
 const app = express();
@@ -29,20 +34,28 @@ const auth = require('./auth/index')
 
 //da bi opsluzivao slike koristim static u expresu 
 app.use(express.static('public/uploads'))
+app.use(express.static('images'))
 
 app.use(express.json())
 app.use(middleware.checkTokenSetUser)
 
 
+cron.schedule('* * * * *', ()=>{
+    console.log('Bravo momci')
+    kobas.fetchData()
+    console.log('Karina..')
+})
 
-app.use('/auth',auth)
-app.use('/auth/login',auth)
-app.use('/auth/main',auth)
-app.use('/auth/about',auth)
-app.use('/auth/admin',auth)
-app.use('/auth/teretana',auth)
-app.use('/auth/upload',auth)
-app.use('/auth/register',auth)
+app.use('/auth',auth.router)
+app.use('/auth/login',auth.router)
+app.use('/auth/main',auth.router)
+app.use('/auth/about',auth.router)
+app.use('/auth/admin',auth.router)
+app.use('/auth/teretana',auth.router)
+app.use('/auth/upload',auth.router)
+app.use('/auth/register',auth.router)
+app.use('/auth/test',auth.router)
+
 
 
 

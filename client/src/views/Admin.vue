@@ -1,11 +1,12 @@
 <template>
   <div>
-    <router-link to="/main">Home</router-link>|
-    <router-link to="/about">About</router-link>|
-    <router-link to="/vreme">Vreme</router-link>|
-    <router-link to="/admin">Admin</router-link>|
-    <router-link :to="{name:'Profile'}">Profile |</router-link>
-    <a @click="logout">Logout</a>
+     <router-link to="/main">Home</router-link>|
+      <router-link :to="{name:'About'}"> About </router-link>|
+      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
+      <router-link to="/admin" v-if="admin"> Admin |</router-link>
+      <router-link :to="{name:'Profile'}"> Profile |</router-link>
+      <router-link :to="{name:'Test'}"> Galerija |</router-link>
+      <a @click="logout"> Logout</a>
     <h1>{{message}}</h1>
 
     <div style="widows: 400px; margin: 0px 40%;">

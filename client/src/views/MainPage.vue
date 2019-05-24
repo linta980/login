@@ -1,12 +1,13 @@
 /<template>
   <div id="container">
     <div class="page-header">
-      <router-link to="/main">Home</router-link>|
-      <router-link :to="{name:'About'}">About</router-link>|
-      <router-link :to="{name:'Vreme'}">Vreme</router-link>|
-      <router-link to="/admin" v-if="admin">Admin |</router-link>
-      <router-link :to="{name:'Profile'}">Profile |</router-link>
-      <a @click="logout">Logout</a>
+      <router-link to="/main"> Home </router-link>|
+      <router-link :to="{name:'About'}"> About </router-link>|
+      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
+      <router-link to="/admin" v-if="admin"> Admin |</router-link>
+      <router-link :to="{name:'Profile'}"> Profile |</router-link>
+      <router-link :to="{name:'Test'}"> Galerija |</router-link>
+      <a @click="logout"> Logout</a>
     </div>
 
     <h1 v-if="!user">Jos nema usera..</h1>
@@ -97,7 +98,7 @@ export default {
           if (result.username === "admin@admin.net") {
             this.admin = true;
             localStorage.admin = true;
-            localStorage.user_id = result._id;
+            // localStorage.user_id = result._id;
             localStorage.username = result.username;
           } else {
             localStorage.user_id = result._id;

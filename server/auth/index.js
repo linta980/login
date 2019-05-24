@@ -3,6 +3,8 @@ const Joi = require('joi')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const fs = require('fs')
+const fetch = require('node-fetch')
 
 const fileUpload = require('express-fileupload')
 
@@ -28,6 +30,7 @@ const db = require('../db/connection')
 // jEBENO ZNACI : juzers mi je baza (database) a users mi je tabela/kolekcija -- jebo joj ja mater
 const users = db.get('users')
 const teretana = db.get('teretana_useri')
+const test = db.get('test')
 
 const router = express.Router()
 
@@ -52,6 +55,30 @@ const schema_teretana = Joi.object().keys({
 const schema_file = Joi.object().keys({
     file_name: Joi.string().valid(['image/jpeg/png']).required()
 })
+
+
+//--------------TEST------------------//
+router.get("/test", (req, res) => {
+    test.find({}).then(result => {
+        res.json(result)
+    })
+})
+function fetchData() {
+    console.log('Pocinje..')
+    const date = new Date().getTime()
+    fetch('https://picsum.photos/200?random').
+        then(res => {
+            const dest = fs.createWriteStream('./images/' + date + '.png')
+            res.body.pipe(dest)
+            test.insert({
+                ime_slike: date + '.png',
+                file_path: date + '.png'
+            }).then(inserted_picture => res.json({
+                message: 'SLika je uneta u bazu'
+            }))
+        })
+}
+
 
 
 // ------------------REGISTER-------------------------
@@ -131,7 +158,7 @@ router.post('/login', (req, res, next) => {
                                 respondError422(res, next)
                             }
                             else {
-                                res.json({token,user})
+                                res.json({ token, user_id: payload._id })
 
                             }
                         })
@@ -153,11 +180,9 @@ router.post('/login', (req, res, next) => {
 })
 
 
-
-
 //-------------------MAIN PAGE-------------------
 router.get('/main', (req, res) => {
-    
+
     res.json({
         message: 'E sve kul..',
         user: req.user
@@ -275,39 +300,5 @@ function respondError422(res, next) {
 }
 
 
+module.exports = { router: router, fetchData: fetchData }
 
-
-
-
-
-// router.post('/signup', (req, res, next) => {
-//     const result = Joi.validate(req.body, schema)
-//     if (result.error === null) {
-//         users.findOne({
-//             username: req.body.username
-//         }).then(user => {
-//             if (user) {
-//                 const error = new Error('Username already exists')
-//                 next(error)
-//             }
-//             else {
-//                 bcrypt.hash(req.body.password, 12).then(hashPassword => {
-
-//                     const newUser = {
-//                         username: req.body.username,
-//                         password: hashPassword
-//                     }
-//                     users.insert(newUser).then(inserted_user => {
-//                         res.json(inserted_user)
-//                     })
-//                 })
-
-//             }
-//         })
-//     }
-//     else {
-//         next(result.error)
-//     }
-// })
-
-module.exports = router

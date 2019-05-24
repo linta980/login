@@ -7,6 +7,7 @@ import Vreme from './views/Vreme.vue'
 import Profile from './views/Profile.vue'
 import Admin from './views/Admin.vue'
 import Register from './views/Register.vue'
+import Test from './views/Test.vue'
 
 
 
@@ -51,6 +52,11 @@ export default new Router({
       path: '/profile',
       name: 'Profile',
       component: Profile
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: Test
     }
     
     
