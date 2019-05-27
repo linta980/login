@@ -1,16 +1,48 @@
 <template>
   <div id="container">
-    <div class="page-header">
-      <router-link to="/main"> Home </router-link>|
-      <router-link :to="{name:'About'}"> About </router-link>|
-      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
-      <router-link to="/admin" v-if="admin"> Admin |</router-link>
-      <router-link :to="{name:'Profile'}"> Profile |</router-link>
-      <router-link :to="{name:'Test'}"> Galerija |</router-link>
-      <a @click="logout"> Logout</a>
+    <nav class="navbar fixed-top navbar-dark bg-primary">
+      <ul class="nav" style="margin:0px auto;">
+        <li class="nav-item">
+          <router-link to="/main">
+            <a class="nav-link active" href="#!">Home</a>
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link :to="{name:'About'}">
+            <a class="nav-link active" href="#!">About</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Vreme'}">
+            <a class="nav-link active" href="#!">Vreme</a>
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/admin" v-if="admin">
+            <a class="nav-link active" href="#!">Admin</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Profile'}">
+            <a class="nav-link active" href="#!">Profile</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Test'}">
+            <a class="nav-link active" href="#!">Galerija</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <a @click="logout" class="nav-link active">Logout</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="jumbotron">
+      <h1 v-if="!user">Jos nema Usera..</h1>
+      <h1 v-if="user">Hello {{user}}, this is About page</h1>
     </div>
-    <h1 v-if="!user">Jos nema Usera..</h1>
-    <h1 v-if="user">Hello {{user}}, this is About page</h1>
   </div>
 </template>
 

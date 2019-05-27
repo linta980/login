@@ -39,12 +39,14 @@ app.use(express.static('images'))
 app.use(express.json())
 app.use(middleware.checkTokenSetUser)
 
+//-----Cron Job da mi na svakih minut skida slie sa nekog sajta i pumpa bazu , trenutno sam ga 
+//onemogucio da me ne smara , ima dosta slika .. a front end ce i daljeda se refresuje na svakih 60 sekundi da vidi da li ima nesto u bazi
 
-cron.schedule('* * * * *', ()=>{
-    console.log('Bravo momci')
-    kobas.fetchData()
-    console.log('Karina..')
-})
+// cron.schedule('* * * * *', ()=>{
+//     console.log('Bravo momci')
+//     kobas.fetchData()
+//     console.log('Karina..')
+// })
 
 app.use('/auth',auth.router)
 app.use('/auth/login',auth.router)

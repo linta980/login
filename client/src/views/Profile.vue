@@ -1,18 +1,51 @@
 <template>
   <div id="container">
-    <div class="page-header">
-      <router-link to="/main"> Home </router-link>|
-      <router-link :to="{name:'About'}"> About </router-link>|
-      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
-      <router-link to="/admin" v-if="admin"> Admin |</router-link>
-      <router-link :to="{name:'Profile'}"> Profile |</router-link>
-      <router-link :to="{name:'Test'}"> Galerija |</router-link>
-      <a @click="logout"> Logout</a>
+    <nav class="navbar fixed-top navbar-dark bg-primary">
+      <ul class="nav" style="margin:0px auto;">
+        <li class="nav-item">
+          <router-link to="/main">
+            <a class="nav-link active" href="#!">Home</a>
+          </router-link>
+        </li>
 
+        <li class="nav-item">
+          <router-link :to="{name:'About'}">
+            <a class="nav-link active" href="#!">About</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Vreme'}">
+            <a class="nav-link active" href="#!">Vreme</a>
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/admin" v-if="admin">
+            <a class="nav-link active" href="#!">Admin</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Profile'}">
+            <a class="nav-link active" href="#!">Profile</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Test'}">
+            <a class="nav-link active" href="#!">Galerija</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <a @click="logout" class="nav-link active">Logout</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="jumbotron">
       <fieldset id="field">
         <br>
         <br>
-        <h5>Upload Picture</h5>
+        <div class="alert alert-success" role="alert" v-if="promena_slike">
+          <strong>Paznjica!</strong> Slika je promenjena klosarau
+        </div>
         <div class="form-group">
           <div class="input-group mb-3">
             <form enctype="multipart/form-data" @submit.prevent="poslji_sliku">
@@ -34,55 +67,50 @@
         </div>
 
         <fieldset>
-          <legend>LIcna pitanja za {{user}}</legend>
-          <div class="form-group">
-            <div class="custom-control custom-radio">
-              <input
-                type="radio"
-                id="customRadio1"
-                name="customRadio"
-                class="custom-control-input"
-                checked
-              >
-              <label class="custom-control-label" for="customRadio1">Toggle this custom radio</label>
+          <legend>Licna pitanja za {{user}}</legend>
+
+          <label for style="text-align:left">Ozenjen/a</label>
+          <ul style="text-align:left">
+            <li style="list-style-type: none; ">
+              <div class="custom-control custom-radio">
+                <input
+                  type="radio"
+                  id="customRadio1"
+                  name="customRadio"
+                  class="custom-control-input"
+                >
+                <label class="custom-control-label" for="customRadio1">Ozenjen</label>
+              </div>
+            </li>
+            <li style="list-style-type: none; ">
+              <div class="custom-control custom-radio">
+                <input
+                  type="radio"
+                  id="customRadio2"
+                  name="customRadio"
+                  class="custom-control-input"
+                >
+                <label class="custom-control-label" for="customRadio2">Neozenjen</label>
+              </div>
+            </li>
+          </ul>
+
+          <label for>Broj dece</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <button
+                class="btn btn-primary dropdown-toggle"
+                type="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >Dropdown</button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+              </div>
             </div>
-            <div class="custom-control custom-radio">
-              <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input">
-              <label
-                class="custom-control-label"
-                for="customRadio2"
-              >Or toggle this other custom radio</label>
-            </div>
-            <div class="custom-control custom-radio">
-              <input
-                type="radio"
-                id="customRadio3"
-                name="customRadio"
-                class="custom-control-input"
-                disabled
-              >
-              <label class="custom-control-label" for="customRadio3">Disabled custom radio</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="customCheck1" checked>
-              <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="customCheck2" disabled>
-              <label class="custom-control-label" for="customCheck2">Disabled custom checkbox</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="customSwitch1" checked>
-              <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-            </div>
-            <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" disabled id="customSwitch2">
-              <label class="custom-control-label" for="customSwitch2">Disabled switch element</label>
-            </div>
+            <input type="text" class="form-control" aria-label="Text input with dropdown button">
           </div>
         </fieldset>
       </fieldset>
@@ -104,14 +132,15 @@ export default {
       admin: false,
       file: "",
       file_selected: false,
-      user: ""
+      user: "",
+      promena_slike: false
     };
   },
   mounted() {
     if (localStorage.getItem("admin")) {
       this.admin = true;
-      this.user = localStorage.ime;
     }
+    this.user = localStorage.username;
   },
   methods: {
     logout() {
@@ -129,6 +158,9 @@ export default {
       formData.append("username", localStorage.username);
       try {
         await axios.post(API_FILE, formData);
+        this.file_selected = false;
+        this.file = "";
+        this.promena_slike = true;
       } catch (error) {
         console.log(error);
       }
@@ -136,7 +168,6 @@ export default {
     handelFileUpload() {
       this.file = this.$refs.file.files[0];
       this.file_selected = true;
-      console.log(this.file.name);
     }
   }
 };

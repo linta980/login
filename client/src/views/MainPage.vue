@@ -1,21 +1,59 @@
-/<template>
+<template>
   <div id="container">
-    <div class="page-header">
-      <router-link to="/main"> Home </router-link>|
-      <router-link :to="{name:'About'}"> About </router-link>|
-      <router-link :to="{name:'Vreme'}"> Vreme </router-link>|
-      <router-link to="/admin" v-if="admin"> Admin |</router-link>
-      <router-link :to="{name:'Profile'}"> Profile |</router-link>
-      <router-link :to="{name:'Test'}"> Galerija |</router-link>
-      <a @click="logout"> Logout</a>
-    </div>
+    <nav class="navbar fixed-top navbar-dark bg-primary">
+      <ul class="nav" style="margin:0px auto;">
+        <li class="nav-item">
+          <router-link to="/main">
+            <a class="nav-link active" href="#!">Home</a>
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link :to="{name:'About'}">
+            <a class="nav-link active" href="#!">About</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Vreme'}">
+            <a class="nav-link active" href="#!">Vreme</a>
+          </router-link>
+        </li>
+
+        <li class="nav-item">
+          <router-link to="/admin" v-if="admin">
+            <a class="nav-link active" href="#!">Admin</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Profile'}">
+            <a class="nav-link active" href="#!">Profile</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link :to="{name:'Test'}">
+            <a class="nav-link active" href="#!">Galerija</a>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <a @click="logout" class="nav-link active">Logout</a>
+        </li>
+      </ul>
+    </nav>
 
     <h1 v-if="!user">Jos nema usera..</h1>
 
     <div class="jumbotron">
       <h1 v-if="user" style>Hello {{user.username}}, this is Main page</h1>
+      
+      <div class="text-center">
+        <b-button variant="primary">
+          Notifications
+          <b-badge variant="light">4</b-badge>
+        </b-button>
+      </div>
 
-      <hr class="my-4">
+
+      <hr class="my-5">
       <div v-if="picture">
         <!-- <img src="../../../server/public/uploads/file-1557992513767ja.png" alt="slika" height="200" width="200"> -->
         <img v-bind:src="picture" alt="slika" height="200" width="200">
@@ -24,7 +62,7 @@
         <p>{{djokica}}</p>
       </div>
       <div>
-        <table class="table table-hover" style="margin-top:20px;">
+        <table class="table">
           <thead>
             <tr>
               <th scope="col">Approved by</th>
@@ -33,9 +71,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- MOram da stavim ovde za v-bind:key = "zadatak._id" , ako stavim zadatak dobijam gresku koja kaze da ne mogu da bindujem 
-            da mi key bude isto sto i zadatak u user_load-->
-            <tr class="table-active" v-for="zadatak in user_load" v-bind:key="zadatak._id">
+            <tr class="table-info" v-for="zadatak in user_load" v-bind:key="zadatak._id">
               <th scope="row">{{zadatak.approved_by}}</th>
               <td>{{zadatak.program}}</td>
               <td>{{zadatak.vreme}}</td>
@@ -122,9 +158,9 @@ export default {
 
 
 <style scoped>
-#nav {
+/* #nav {
   padding: 30px;
-}
+} */
 
 #nav a {
   font-weight: bold;
@@ -138,5 +174,10 @@ export default {
   background-color: #42b983;
   width: 50;
   height: 50px;
+}
+.nav-tabs .nav-item.show .nav-link {
+  color: #495057;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
 }
 </style>

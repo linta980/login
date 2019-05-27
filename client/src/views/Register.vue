@@ -93,7 +93,7 @@ export default {
           if (response.error === null || response.status != 406) {
             this.$router.push("/main");
           } else {
-            console.log("Izduvao si ga buraz..")
+            console.log("Izduvao si ga buraz..");
           }
         })
         .catch();
